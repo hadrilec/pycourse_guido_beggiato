@@ -11,6 +11,7 @@ The *teching approach* is to quickly introduce basic concepts as building blocks
 This course deals in particular with:
 - programming fundamentals
 - the python standard library
+- data-oriented scripts (pandas)
 
 Given the intended audience, some specific techniques and practices relative to the data analysis world will be touched.
 
