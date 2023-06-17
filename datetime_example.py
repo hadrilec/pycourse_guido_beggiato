@@ -1,13 +1,17 @@
 # https://docs.python.org/3/library/datetime.html
 
 from datetime import date, timedelta
+from sys import getsizeof
+
+import numpy as np
+import pandas as pd
 
 
 def main():
     # 3 ways of creating a date object
 
     ## automatic
-    today = date.today() 
+    today = date.today()
     print(today) # 2023-06-17
 
     ## from a string in particular format
@@ -33,7 +37,7 @@ def main():
 
     ## comparison
     print(today < reference_day) # False
-    
+
     ### now we compare 2 strings
     today_str = today.isoformat()
     reference_day_str = reference_day.isoformat()
@@ -122,16 +126,16 @@ def go_back_100_days(reference_day:date=None) -> date:
         reference_day = date.today()
     if not isinstance(reference_day, date):
         raise TypeError(f"'reference_day' must be date, got {type(reference_day)}")
-    
-    DAYS_BACK = timedelta(days=100)
-    return reference_day - DAYS_BACK
+
+    days_back = timedelta(days=100)
+    return reference_day - days_back
 
 
 def get_first_day_of_year(reference_day:date) -> date:
     """returns first day of the year of the provided day"""
     if not isinstance(reference_day, date):
         raise TypeError(f"'day' must be date, got {type(reference_day)}")
-    return reference_day.replace(month=1, day=1)
+    return date(reference_day.year, 1, 1)
 
 
 def get_time_window(n_days:int) -> tuple[date, date]:
@@ -149,5 +153,78 @@ def get_time_window(n_days:int) -> tuple[date, date]:
     return (first, second)
 
 
+def pandas_example():
+
+    N = 1<<9
+    FMT = "%Y-%m-%d"
+    rand = np.random.RandomState(seed=1234)
+
+    start_date = date.today()
+    end_date = start_date + timedelta(days=N-1)
+
+    df = pd.DataFrame()
+    df["DATES"] = pd.date_range(
+        start=start_date, 
+        end=end_date, 
+        freq=timedelta(days=1)
+    )
+    df["FLOW"] = rand.normal(size=N)
+    df["DATES_AS_STRINGS"] = df["DATES"].dt.strftime(FMT)
+    df["STRING_SLICE"] = df["DATES_AS_STRINGS"].str.slice(stop=4)
+    df["YEAR"] = df["DATES"].dt.year
+    df["QUARTER"] = df["DATES"].dt.quarter.astype("category")
+    
+    print(df.head(4), end="\n\n")
+    print(df.dtypes, end="\n\n")
+
+    grouped = (
+        df
+        .groupby(["YEAR", "QUARTER"], sort=True)
+        .agg(
+            FLOW_MEAN = ("FLOW", "mean"),
+            FLOW_SUM = ("FLOW", "sum"),
+            FLOW_MEDIAN = ("FLOW", "median")
+        )
+        # .reset_index()
+    )
+    print(grouped, end="\n\n")
+
+    grouped = (
+        df
+        .groupby(
+            pd.Grouper(
+                key="DATES",
+                # key="DATES_AS_STRINGS", # this does not work !
+                freq="Q"
+            )
+        )
+        .agg(
+            FLOW_MEAN = ("FLOW", "mean"),
+            FLOW_SUM = ("FLOW", "sum"),
+            FLOW_MEDIAN = ("FLOW", "median")
+        )
+        .reset_index()
+    )
+    print(grouped, end="\n\n")
+
+
+
+
+
+
+
+
+
+
+    # d = date.today()
+    # s = d.strftime(FMT)
+    # print(d, type(d), getsizeof(d), end="\n\n")
+    # print(s, type(s), getsizeof(s), end="\n\n")
+
+
+
 if __name__ == "__main__":
-    main()
+    from os import system
+    _ = system("cls")
+    # main()
+    pandas_example()
