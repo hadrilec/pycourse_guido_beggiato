@@ -1,7 +1,6 @@
 # https://docs.python.org/3/library/datetime.html
 
 from datetime import date, timedelta
-from sys import getsizeof
 
 import numpy as np
 import pandas as pd
@@ -224,7 +223,5 @@ def pandas_example():
 
 
 if __name__ == "__main__":
-    from os import system
-    _ = system("cls")
-    # main()
+    main()
     pandas_example()
