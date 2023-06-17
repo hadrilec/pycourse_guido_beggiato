@@ -7,8 +7,6 @@ import numpy as np
 import pandas as pd
 
 
-
-
 def pathlib_extra():
 
     print(__file__)
@@ -22,11 +20,10 @@ def pathlib_extra():
             print(f"{f.stem} + {f.suffix} = {f.name} \n")
 
     # how to easily move from one extension to the other:
-    my_new_csv_file = this_file.with_suffix(".txt") # also with_stem and with_name are available 
-    
+    my_new_file = this_file.with_suffix(".txt") # also with_stem and with_name are available 
     # create missing files
-    if not my_new_csv_file.exists():
-        my_new_csv_file.touch()
+    if not my_new_file.exists():
+        my_new_file.touch()
 
     # creating directories
     new_folder = this_file.parent / "broccoli"
@@ -79,7 +76,7 @@ def main():
     # -> 2 == 2
     # -> 0 == 0
     # -> 2 == 2
-    # -> 3 != 2 -> comparison breaks here and you get the false
+    # -> 3 > 2 -> comparison breaks here and you get False
 
     # why compare strings when you can compare objects
     # that have been designed to represent dates and have
@@ -90,13 +87,15 @@ def main():
 
     # comparison across dates is:
     # first compare the year, then month, then day
-    # not only this is faster, it's also safer (comparing integers in
+    # not only this is faster, it's also safer (comparing integers is
     # an objective concept, comparing strings is not -> alphabetical order
     # is just a convention!)
 
     # finally, a date represented as a string occupies roughly 3 times 
     # more space than a datetime object -> this starts to matter when you have
     # many of them into a pandas column ! 
+
+    # -----------------------------------------
 
     ## deltas in time
 
@@ -129,9 +128,9 @@ def previous_sunday(reference_day:date=None) -> date:
     """
     given a date, returns the previous sunday
     if date is not provided, uses today as reference point
-    input date is sunday, return input and not the previous sunday
+    if input date is sunday, returns input and not the previous sunday
     """
-    # handle the default algorithm
+    # handle the default value of the parameter
     if reference_day is None:
         reference_day = date.today()
     # check input sanity
@@ -139,7 +138,7 @@ def previous_sunday(reference_day:date=None) -> date:
         raise TypeError(f"'reference_day' must be date, got {type(reference_day)}")
     # actually perform the algorithm
     for i in range(7):
-        possible_sunday = reference_day.replace(day=reference_day.day-i)
+        possible_sunday = reference_day - timedelta(days=i)
         if possible_sunday.weekday() == 6:
             return possible_sunday
 
@@ -182,7 +181,7 @@ def get_time_window(n_days:int) -> tuple[date, date]:
 
 def pandas_example():
 
-    N = 1<<9
+    N = 300
     FMT = "%Y-%m-%d"
     rand = np.random.RandomState(seed=1234)
 
