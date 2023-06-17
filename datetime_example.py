@@ -1,9 +1,37 @@
 # https://docs.python.org/3/library/datetime.html
 
 from datetime import date, timedelta
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+
+
+
+def pathlib_extra():
+
+    print(__file__)
+
+    this_file = Path(__file__)
+
+    user_folder = Path(r"C:\Users")
+
+    for f in this_file.parent.iterdir():
+        if f.is_file():
+            print(f"{f.stem} + {f.suffix} = {f.name} \n")
+
+    # how to easily move from one extension to the other:
+    my_new_csv_file = this_file.with_suffix(".txt") # also with_stem and with_name are available 
+    
+    # create missing files
+    if not my_new_csv_file.exists():
+        my_new_csv_file.touch()
+
+    # creating directories
+    new_folder = this_file.parent / "broccoli"
+    if not new_folder.exists():
+        new_folder.mkdir()
 
 
 def main():
