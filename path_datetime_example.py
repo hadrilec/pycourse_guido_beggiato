@@ -1,10 +1,25 @@
-# https://docs.python.org/3/library/datetime.html
-
 from datetime import date, timedelta
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+
+def pathlib_base():
+
+    # https://docs.python.org/3/library/pathlib.html
+
+    this_file = Path(__file__)
+
+    folder = this_file.parent
+
+    print(this_file.exists())
+    print(this_file.is_file())
+    print(this_file.is_dir())
+    print(this_file.name)
+    print(this_file.stem)
+    print(this_file.suffix)
+
 
 
 def pathlib_extra():
@@ -33,6 +48,8 @@ def pathlib_extra():
 
 def main():
     # 3 ways of creating a date object
+
+    # https://docs.python.org/3/library/datetime.html
 
     ## automatic
     today = date.today()
@@ -232,23 +249,3 @@ def pandas_example():
         .reset_index()
     )
     print(grouped, end="\n\n")
-
-
-
-
-
-
-
-
-
-
-    # d = date.today()
-    # s = d.strftime(FMT)
-    # print(d, type(d), getsizeof(d), end="\n\n")
-    # print(s, type(s), getsizeof(s), end="\n\n")
-
-
-
-if __name__ == "__main__":
-    main()
-    pandas_example()

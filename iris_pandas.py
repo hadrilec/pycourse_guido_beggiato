@@ -1,11 +1,11 @@
-from pandas import read_csv
+import pandas as pd
 
 
 def main():
 
     iris_url = "https://j.mp/iriscsv"
 
-    data = read_csv(iris_url)
+    data = pd.read_csv(iris_url)
     
     data.columns = data.columns.str.upper()
 
@@ -13,10 +13,17 @@ def main():
     max_width_accepted = 4.20
     min_length_accepted = 6.9
 
+    # the code below applies the "chaining commands" principle,
+    # where the output of one action is immediately fed as input 
+    # for the next opeation, meaning that at the end of the pipeline
+    # the result corresponds to the sequence of provided commands
+    # but all intermediate steps are discarded -> clean and efficient !
+
     analysis = (
         data
         # add columns
-        .assign(OK_WIDTH=data["SEPAL_WIDTH"] <= max_width_accepted)
+        # using a lambda ensures that we refer to the data at this point of the pipe
+        .assign(OK_WIDTH = lambda df: df["SEPAL_WIDTH"] <= max_width_accepted)
         # remove columns
         .drop(columns=["SEPAL_WIDTH", "PETAL_WIDTH"])
         # groupby and aggregate
